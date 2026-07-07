@@ -1,0 +1,145 @@
+:root {
+    --bordo-escuro: #3E0F19;
+    --bordo: #6B1E2A;
+    --dourado: #C9A227;
+    --dourado-suave: #E4C766;
+    --creme: #F5EFE6;
+    --creme-suave: #D8C9B8;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+    background: radial-gradient(ellipse at center, var(--bordo) 0%, var(--bordo-escuro) 100%);
+    color: var(--creme);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ---------- Cabeçalho ---------- */
+header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 28px 48px;
+    border-bottom: 1px solid rgba(201, 162, 39, 0.35);
+}
+
+header img {
+    height: 64px;
+    width: auto;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
+}
+
+header .titulo-institucional {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 26px;
+    letter-spacing: 0.04em;
+    color: var(--creme);
+    opacity: 0.92;
+}
+
+/* ---------- Zona principal ---------- */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    text-align: center;
+}
+
+.eyebrow {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 26px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--dourado);
+    margin-bottom: 8px;
+}
+
+/* Brilho dourado que pulsa por trás do número quando chega uma nova chamada */
+.brilho {
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(228, 199, 102, 0.35) 0%, rgba(228, 199, 102, 0) 70%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.brilho.pulsar {
+    animation: pulsarBrilho 1.4s ease-out;
+}
+
+@keyframes pulsarBrilho {
+    0%   { opacity: 0;   transform: scale(0.85); }
+    30%  { opacity: 1;   transform: scale(1.05); }
+    100% { opacity: 0;   transform: scale(1.25); }
+}
+
+#senha {
+    font-size: 260px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--creme);
+    position: relative;
+    transition: opacity 0.25s ease;
+}
+
+#senha.trocando {
+    opacity: 0;
+}
+
+#tipo-atendimento {
+    margin-top: 18px;
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--creme-suave);
+    min-height: 40px;
+}
+
+#tipo-atendimento.prioritario {
+    color: var(--dourado-suave);
+    font-weight: 600;
+}
+
+/* ---------- Rodapé ---------- */
+footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px 48px;
+    border-top: 1px solid rgba(201, 162, 39, 0.2);
+}
+
+#relogio {
+    font-variant-numeric: tabular-nums;
+    font-size: 20px;
+    color: var(--creme-suave);
+    opacity: 0.7;
+    letter-spacing: 0.05em;
+}
+
+@media (max-width: 900px) {
+    #senha { font-size: 140px; }
+    .eyebrow { font-size: 18px; }
+    #tipo-atendimento { font-size: 22px; }
+    header .titulo-institucional { font-size: 18px; }
+    header img { height: 44px; }
+}
