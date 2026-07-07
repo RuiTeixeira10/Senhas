@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Senhas</title>
+    <style>
+        body { font-family: Arial; text-align: center; margin-top: 50px; }
+        button { padding: 15px 30px; margin: 10px; font-size: 20px; }
+
+        #painel {
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 40px;
+            font-weight: bold;
+            background: #f0f0f0;
+            border-radius: 10px;
+            width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #resultado {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Sistema de Senhas</h1>
+
+    <button onclick="emitir('G')">Emitir Geral (G)</button>
+    <button onclick="emitir('P')">Emitir Prioridade (P)</button>
+    <button onclick="chamar()">Chamar Próxima</button>
+
+    <div id="resultado"></div>
+
+    <div id="painel">Nenhuma senha emitida</div>
+
+    <script>
+        function emitir(tipo) {
+            fetch(`/emitir/${tipo}`, { method: "POST" })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.erro) {
+                        document.getElementById("resultado").innerText = "Erro: " + data.erro;
+                        return;
+                    }
+                    document.getElementById("resultado").innerText =
+                        "Emitida: " + data.codigo;
+                })
+                .catch(err => {
+                    document.getElementById("resultado").innerText = "Erro de ligação ao servidor";
+                    console.error(err);
+                });
+        }
+
+        function chamar() {
+            fetch("/chamar", { method: "POST" })
+                .then(r => r.json())
+                .then(data => {
+                    // Protege contra "undefined": só atualiza se houver mesmo um código
+                    if (data.codigo) {
+                        document.getElementById("resultado").innerText =
+                            "Chamando: " + data.codigo;
+                        document.getElementById("painel").innerText = data.codigo;
+                    } else {
+                        document.getElementById("resultado").innerText =
+                            data.mensagem || "Sem senhas para chamar";
+                        // Não mexe no #painel -- mantém a última senha válida visível
+                    }
+                })
+                .catch(err => {
+                    document.getElementById("resultado").innerText = "Erro de ligação ao servidor";
+                    console.error(err);
+                });
+        }
+    </script>
+
+</body>
+</html>
+

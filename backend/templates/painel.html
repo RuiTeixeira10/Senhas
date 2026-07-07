@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel de Senhas — Santa Casa da Misericórdia</title>
+    <link rel="stylesheet" href="/css/painel.css">
+</head>
+<body>
+ 
+    <header>
+        <img src="/imagens/logo.png" alt="Santa Casa da Misericórdia">
+        <span class="titulo-institucional">Santa Casa da Misericórdia</span>
+    </header>
+ 
+    <main>
+        <div class="brilho" id="brilho"></div>
+        <div class="eyebrow">Senha Atual</div>
+        <div id="senha">— — —</div>
+        <div id="tipo-atendimento"></div>
+    </main>
+ 
+    <footer>
+        <span id="relogio"></span>
+    </footer>
+
+    <script>
+        let ultimoCodigo = null;      // último código já mostrado, para detetar mudanças
+
+        // Ficheiro de som fornecido: backend/../mp3/som.mp3, servido pelo Flask em /mp3/som.mp3
+        const somChamada = new Audio("/mp3/som.mp3");
+        somChamada.preload = "auto";
+
+        function tocarSom() {
+            somChamada.currentTime = 0;   // permite tocar de novo mesmo que ainda esteja a tocar
+            somChamada.play().catch(err => {
+                // Se aparecer aqui "NotAllowedError", o browser está a bloquear
+                // autoplay -- ver instruções para lançar o Chrome/Edge com
+                // --autoplay-policy=no-user-gesture-required
+                console.error("Erro ao tocar som (possível bloqueio de autoplay):", err);
+            });
+        }
+
+        function atualizarPainel() {
+            fetch("/ultima_chamada", { cache: "no-store" })
+                .then(r => r.json())
+                .then(data => {
+                    const painel = document.getElementById("senha");
+
+                    if (data.codigo) {
+                        // Só toca o som se o código for DIFERENTE do anterior
+                        // (evita tocar repetidamente a cada segundo com o mesmo código)
+                        if (ultimoCodigo !== null && data.codigo !== ultimoCodigo) {
+                            tocarSom();
+                        }
+                        ultimoCodigo = data.codigo;
+                        painel.innerText = data.codigo;
+                    } else {
+                        painel.innerText = "Aguardando...";
+                    }
+                })
+                .catch(() => {
+                    // Em caso de erro no servidor, não apaga o painel
+                });
+        }
+
+        setInterval(atualizarPainel, 1000);
+        atualizarPainel(); // primeira chamada imediata, sem esperar 1s
+    </script>
+
+</body>
+</html>
